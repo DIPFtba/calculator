@@ -1,26 +1,34 @@
 /* ------- calculator housing ------- */
 
+html body{
+	background-color: #fff;
+}
+
 .calc-main {
 	display: block;
 	/* width: 480px; */ /* only needed in Chrome extension */
-	padding: 16px 10px 18px;
-	font: bold 15px/28px Arial, Helvetica, sans-serif;
-	border-radius: 12px;
-	box-shadow:
+	padding: 16px 4px 12px;
+	font: bold 20px/28px Arial, Helvetica, sans-serif;
+	border-radius: 7px;
+	/*box-shadow:
 		inset  0px -38px 5px rgba(  0,   0,   0, 0.8),
 		inset  0px   6px 4px rgba(255, 255, 255, 0.25),
 		inset  0px   2px 1px rgba(255, 255, 255, 0.25),
 		inset  3px   0px 3px rgba(255, 255, 255, 0.25),
-		inset -4px   0px 4px rgba(  0,   0,   0, 0.75);
-	background: #141414; /* Old browsers */
-	background: -moz-linear-gradient(top,  #141414 45%, #282828 80%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(45%,#141414), color-stop(80%,#282828)); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(top,  #141414 45%,#282828 80%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(top,  #141414 45%,#282828 80%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(top,  #141414 45%,#282828 80%); /* IE10+ */
-	background: linear-gradient(to bottom,  #141414 45%,#282828 80%); /* W3C */
+		inset -4px   0px 4px rgba(  0,   0,   0, 0.75);*/
+		
+	-webkit-box-shadow: inset -1px -1px 13px 6px rgba(125,125,125,1);
+	-moz-box-shadow: inset -1px -1px 13px 6px rgba(125,125,125,1);
+	box-shadow: inset -1px -1px 13px 6px rgba(125,125,125,1);		
+			
+	background: #d1cec9; /* Old browsers */
+	
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#141414', endColorstr='#282828',GradientType=0 ); /* IE6-9 */
 }
+.calc-main.disabled{
+	opacity: .7;
+}
+
 .calc-main:after {
 	content: "";
 	display: block;
@@ -34,15 +42,18 @@
 
 .calc-display {
 	position: relative;
-	height: 60px;
+	height: 65px;
 	margin: 0 5px 6px 5px;
 	padding: 0 8px;
 	border-radius: 5px;
+	/*
 	box-shadow:
 		inset 0 30px 1px rgba(255, 255, 255, 0.25),
 		inset 0 -1px 2px rgba(255, 255, 255, 0.5),
 		inset 0  2px 3px rgba(  0,   0,   0, 0.40);
-	font-size: 45px;
+	*/
+	box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.6) inset;
+	font-size: 40px;
 	line-height: 61px;
 	text-align: right;
 	white-space: nowrap;
@@ -50,18 +61,19 @@
 	cursor: default;
 	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.01); /* for nicer/smoother rendering */
 	background: #edefe0; /* Old browsers */
-	background: -moz-linear-gradient(top,  #edefe0 45%, #babea2 80%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(45%,#edefe0), color-stop(80%,#babea2)); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(top,  #edefe0 45%,#babea2 80%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(top,  #edefe0 45%,#babea2 80%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(top,  #edefe0 45%,#babea2 80%); /* IE10+ */
-	background: linear-gradient(to bottom,  #edefe0 45%,#babea2 80%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#edefe0', endColorstr='#babea2',GradientType=0 ); /* IE6-9 */
+	background: -moz-linear-gradient(top,  #ededed 45%, #bababa 80%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(45%,#ededed), color-stop(80%,#bababa)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #ededed 45%,#bababa 80%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #ededed 45%,#bababa 80%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #ededed 45%,#bababa 80%); /* IE10+ */
+	background: linear-gradient(to bottom,  #ededed 45%,#bababa 80%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#edefe0', endColorstr='#bababa',GradientType=0 ); /* IE6-9 */
+	
 }
 .calc-rad {
 	position: absolute;
-	bottom: 2px;
-	font-size: 14px;
+	bottom: 5px;
+	font-size: 12px;
 	line-height: 14px;
 	left: 11px;
 }
@@ -70,14 +82,24 @@
 }
 .calc-hold {
 	position: absolute;
-	right: 5px;
-	bottom: 1px;
-	font-size: 8px;
+	left: 11px;
+	bottom: 25px;
+	font-size: 12px;
 	line-height: 13px;
 	color: #666;
 	height: 12px;
 }
-
+.calc-log {
+	position: absolute;
+	right: 5px;
+	bottom: 5px;
+	width: 230px;
+	overflow: hidden;
+	font-size: 12px;
+	line-height: 13px;
+	color: #666;
+	height: 12px;
+}
 /* ----- display helper buttons ----- */
 
 .calc-buttons {
@@ -85,15 +107,15 @@
 	top: 2px;
 	left: 2px;
 	opacity: .35;
-	height: 14px;
-	width: 14px;
+	height: 10px;
+	width: 10px;
 	transition:
 		opacity 0.15s ease-in;
 }
 .calc-buttons:hover {
 	opacity: 0.75;
-	height: 100%;
-	width: 17px;
+	height: 0px;
+	width: 0px;
 }
 .calc-buttons div {
 	position: absolute;
@@ -108,7 +130,7 @@
 	color: #333;
 	cursor: default;
 	border-radius: 50%;
-	border: 1px solid #444;
+	/*border: 1px solid #444;*/
 }
 .calc-buttons .calc-smaller {
 	opacity: 0;
@@ -139,10 +161,10 @@
 
 /* -------- key board -------- */
 
-.calc-left, .calc-right {
+.calc-left/*, .calc-right*/ {
 	position: relative;
 	float: left;
-	width: 240px;
+	width: 292px;
 }
 
 .calc-small .calc-left {
@@ -168,53 +190,83 @@
 	top: 4px;
 	border: 0;
 	background-color: transparent;
+	z-index: -1;
 }
 
 /* -------- key board keys -------- */
 
-.calc-left > div, .calc-right > div {
-	margin: 5px 4px;
+.calc-left > div/*, .calc-right > div*/ {
+	margin: 4px;
 	position: relative;
 	width: 50px;
-	height: 28px;
-	background-color: #4c5356;
-	border: 1px solid black;
+	height: 38px;
+	/*background-color: #4c5356;*/
+	/*border: 1px solid black;*/
 	box-shadow: 0 1px rgba(255, 255, 255, 0.1);
 	border-radius: 6px;
 	overflow: hidden;
 	float: left;
 	cursor: default;
 }
-.calc-left > div > div, .calc-right > div > div {
+
+
+.calc-left > div > div/*, .calc-right > div > div*/ {
 	position: absolute;
 	top: 0px;
 	right: 0px;
-	height: 28px;
+	height: 35px;
 	left: 0px;
 	width: 100%;
-	border: 1px solid #000;
+	/*border: 1px solid #000;*/
 	border-radius: 6px;
-	color: #eee;
-	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
+	color: #666;
+	/*text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);*/
 	text-align: center;
-	background: #656e72;
+	background: #eaeaea;
 	
 	border-top-left-radius: 6px;
 	border-top-right-radius: 6px;
-	border-bottom-left-radius: 26px 6px;
-	border-bottom-right-radius: 26px 6px;
-	box-shadow:
+	border-bottom-left-radius: 6px;
+	border-bottom-right-radius: 6px;
+	/*box-shadow:
 		inset 0 -15px 1px rgba(  0,   0,   0, 0.25),
 		inset 0   1px 1px rgba(255, 255, 255, 0.4),
-		inset 0   6px 6px rgba(255, 255, 255, 0.25);
+		inset 0   6px 6px rgba(255, 255, 255, 0.25);*/
+	box-shadow: 1px 1px 2px 1px rgba(0, 0, 0, 0.5) inset;
 	border: none;
+	padding: 5px 0 0;
 }
-.calc-left > div > div:hover, .calc-right > div > div:hover {
+
+.calc-left > div.small, .calc-left > div.small > div{
+	height: 28px;
+	font-size: 15px;
+	padding: 0px;
+}
+
+.calc-left > div.small.mixed{
+	margin-bottom: 15px;
+}
+ 
+
+.calc-left > div.calc-grey0 > div:hover, .calc-right > div.calc-grey0 > div:hover {
+	background-color: rgb(245, 245, 245);
+	color: #99a;
+}
+
+.calc-left > div.calc-grey1 > div:hover, .calc-right > div.calc-grey1 > div:hover {
+	text-shadow:
+		0px  0px  8px  rgb(230, 230, 230),
+		0px  0px 22px  rgb(255, 255, 255);
+}
+
+.calc-left > div.calc-grey2 > div:hover, .calc-right > div.calc-grey2 > div:hover {
 	text-shadow:
 		0px  0px  8px  rgb(255, 230, 186),
-		0px  0px 22px  rgb(255, 255, 255),
-		0px -1px  0px rgba(  0,   0,   0, 0.5);
+		0px  0px 22px  rgb(255, 255, 255);
 }
+
+
+
 .calc-right .calc-eq {
 	height: 68px;
 	position: absolute;
@@ -253,6 +305,15 @@
 	box-shadow: none;
 	clear: right;
 }
+body div.calc-grey1 > div{
+	background-color: #AFAFAF;
+	color: #fff;
+}
+body div.calc-grey2 > div{
+	background-color: #666;
+	color: #fff;
+}
+
 .calc-right .calc-brown > div {
 	background-color: #635045;
 }
@@ -262,6 +323,7 @@
 
 .calc-right .calc-black > div {
 	background-color: #000;
+	color: #fff;
 	box-shadow:
 		inset 0 -13px 1px rgba(50,   50,  50, 0.5),
 		inset 0   1px 1px rgba(255, 255, 255, 0.25),
@@ -279,15 +341,12 @@
 }
 .calc-left > div:active, .calc-right > div:active,
 .calc-left .calc-press, .calc-right .calc-press {
-	box-shadow:
-		inset 0 -9px 6px rgba(255, 255, 255, 0.35),
-			  0  1px     rgba(255, 255, 255, 0.15);
+	box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.5) inset;
 }
 .calc-left > div:active > div, .calc-right > div:active > div,
 .calc-left .calc-press > div, .calc-right .calc-press > div {
 	background: none;
-	box-shadow:
-		inset 0 1px 1px rgba(255, 255, 255, 0.3);
+	box-shadow:0 0 2px 0 rgba(0, 0, 0, 0.5) inset;
 }
 .calc-left .calc-active, .calc-right .calc-active {
 	box-shadow:
