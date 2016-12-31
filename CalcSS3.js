@@ -629,7 +629,7 @@
 		}
 		
 		lastKey = buffStr[buffStr.length - 2];
-		var regex0 =  new RegExp ('(sin-1|cos-1|tan-1|sinh|cosh|tanh|sinh-1|cosh-1|tanh-1|sin|cos|tan|ln|log|log2|3√y?|2√y?|1/x|ex|e\^|3#Wurzel|2#Wurzel|x2|x3)');
+		var regex0 =  new RegExp ('(sin-1|cos-1|tan-1|sinh|cosh|tanh|sinh-1|cosh-1|tanh-1|sin|cos|tan|ln|log|log2|3√y?|2√y?|1/x|ex|e\^|x2|x3)');
 		
                 if(key === "(" && lastKey && (!isNaN(lastKey) || lastKey === "x√y" || lastKey.match(regex0) ) ){
                         render(calculator[brackets].init(key));
@@ -1048,7 +1048,7 @@
                                             
                                           //fn(x)
                                           
-                                            var regstr = "sin-1|cos-1|tan-1|sinh|cosh|tanh|sinh-1|cosh-1|tanh-1|sin|cos|tan|ln|log|log2|3√y?|2√y?|1/x|ex|e\\^|3#Wurzel|2#Wurzel";
+                                            var regstr = "sin-1|cos-1|tan-1|sinh|cosh|tanh|sinh-1|cosh-1|tanh-1|sin|cos|tan|ln|log|log2|3√y?|2√y?|1/x|ex|e\\^";
                                             var regex0 =  new RegExp ('('+regstr+')');
 
                                             if(_key.match(regex0)){
@@ -1070,22 +1070,18 @@
 							function(str,p1,p2){
 								var ret = "";
 //                                                                console.log(p1,p2,p3);
-								if (_key == "3√y" || _key == "3#Wurzel"){
-//									ret = "3#Wurzel("+p1+")";
-									ret = "3√¯("+p1+")";
+								if (_key === "3√y"){
+									ret = "3√("+p1+")";
 									renderHistory.logstr[i] = "3√";
-//									renderHistory.logstr[i] = "3#Wurzel";
 								}								
-								else if(_key == "√" || _key == "2√y" || _key == "2#Wurzel"){
+								else if(_key === "√" || _key === "2√y"){
 									ret = "2√("+p1+")";
-//									ret = "2#Wurzel("+p1+")";
 									renderHistory.logstr[i] = "2√";
-//									renderHistory.logstr[i] = "2#Wurzel";
 								}
-								else if (_key == "1/x"){
+								else if (_key === "1/x"){
 									ret = "1/"+p1;
 								}
-								else if (_key == "ex"){
+								else if (_key === "ex"){
 									ret = "e^("+p1+")";	
 									renderHistory.logstr[i] = "e^";									
 								}
@@ -1107,65 +1103,7 @@
                                             
                                             else
                                                 tmp += renderHistory.logstr[i];
-                                        }
-					
-//                                        console.log(renderHistory.logstr, renderHistory.dispval);
-					
-									
-                                    /*
-                                        var regstr = "sin-1|cos-1|tan-1|sinh|cosh|tanh|sinh-1|cosh-1|tanh-1|sin|cos|tan|ln|log|log2|3√y|2√y|1/x|ex|e\\^|3#Wurzel|2#Wurzel";
-					var regex0 =  new RegExp ('('+regstr+')');
-
-					if(_key.match(regex0)){
-						
-						if(_prevKey == null)
-							tmp = "0"+tmp;
-						
-						var regex1 =  new RegExp ("(-?[0-9π!^.]+|\\(.+\\))([–+×\/]?)("+regstr+")$");
-						if(_prevKey != null){
-							if(_prevKey == 'e^'){	// "^" causes problems, since it's part of the regex syntax and needs to be escaped 
-								regex1 =  new RegExp ("(e\\^\\(.+\\))([–+×\/]?)("+regstr+")$");
-							}
-							else if(_prevKey.match(regex0)){
-								regex1 =  new RegExp ("("+_prevKey+"\\(.+\\))([–+×\/]?)("+regstr+")$");
-							}
-						}
-						
-						tmp = tmp.replace(regex1, 
-							function(str,p1,p2,p3){
-								var ret = "";
-//                                                                console.log(p1,p2,p3);
-								if (p3 == "3√y" || p3 == "3#Wurzel"){
-//									ret = "3#Wurzel("+p1+")";
-									ret = "3#Wurzel("+p1+")";
-									renderHistory.logstr[i] = "3#Wurzel";
-								}								
-								else if(p3 == "√" || p3 == "2√y" || p3 == "2#Wurzel"){
-									ret = "2#Wurzel("+p1+")";
-									renderHistory.logstr[i] = "2#Wurzel";
-								}
-								else if (p3 == "1/x"){
-									ret = "1/"+p1;
-								}
-								else if (p3 == "ex"){
-									ret = "e^("+p1+")";	
-									renderHistory.logstr[i] = "e^";									
-								}
-								else{
-                                                                    ret = p3+"("+p1+")";
-								}
-
-                                                                if(p2.length>0){
-                                                                    ret = p1+p2+ret;
-                                                                }
-								
-								renderHistory.dispval[i] = ret;								
-								
-								return ret;
-							}
-						);
-					}
-                                        */
+                                        }					
 			}
 			
 			logline.textContent = tmp;
