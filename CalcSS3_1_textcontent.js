@@ -87,7 +87,7 @@
 		if (rank[key] <= rank[this.stack[this.num - 1][1]]) {
 			this.stack[this.num - 1] = [
 				this.stack[this.num - 1][1] === 'yx' ? Math.pow(this.stack[this.num - 1][0], val) :
-				this.stack[this.num - 1][1] === 'x√y' ?/* Math.pow(this.stack[this.num - 1][0], 1 / val)*/ nthroot(this.stack[this.num - 1][0], val) :
+				this.stack[this.num - 1][1] === 'x√y' ?/* Math.pow(this.stack[this.num - 1][0], 1 / val)*/ nthroot(this.stack[this.num - 1][0], this.buff[0]) :
 				this.stack[this.num - 1][1] === 'EE' ? this.stack[this.num - 1][0] * Math.pow(10, val) :
 					eval('(' + this.stack[this.num - 1][0] + ')' + this.stack[this.num - 1][1] + '(' + val + ')'),
 				key
@@ -124,8 +124,7 @@
 
 	// colloect all keys...
 	for (var l = calcSS3.children[2], m = l.children, n = m.length; n--; ) {
-                var _key = getKeyText(l.children[n]);
-                keyBoard[_key] = l.children[n];
+		keyBoard[l.children[n].textContent.replace(/\s*/g, '')] = l.children[n];
 	}
 
 	
@@ -175,8 +174,7 @@
 
 	document.addEventListener('keypress', function(e) {
 		var key = e.which,
-			holdKey = getKeyText(hold),
-//			holdKey = hold.textContent,
+			holdKey = hold.textContent,
 			keyMatch = (',|.|-|–|/|÷|*|×|#|+/–|x|x!|E|EE|e|ex| |2nd|r|x√y|R|√|p|π|^|yx|\'|yx|"|yx|m|mr|v|mc|b|m+|n|m-|' +
 				's|sin|c|cos|t|tan|S|sin-1|C|cos-1|T|tan-1|d|Deg|°|Deg|l|ln|L|log|\\|1/x|X|2x').split('|'),
 			keyMatchHold = ('sin|sinh|cos|cosh|tan|tanh|m-|Rand|Deg|Rand|sin-1|sinh-1|cos-1|cosh-1|tan-1|tanh-1|' +
@@ -244,8 +242,7 @@
 		}
 		if (e.which === 46) {
 			keyDown(false, keyBoard['AC']);
-//			doKey(keyBoard['AC'].textContent, true);
-			doKey(getKeyText(keyBoard['AC']), true);
+			doKey(keyBoard['AC'].textContent, true);
 		}
 		if (e.which === 9) {
 			// UK: Deactivate small version --> No TOGGLE ;-)
@@ -324,10 +321,9 @@
 		hiddenCopy.focus();
 		var event = e || window.event,
 			target = getTargetKey(event.target),
-//			keyText = target.textContent.replace(/\s*/g, ''),
-			keyText = getKeyText(target),
+			keyText = target.textContent.replace(/\s*/g, ''),
 			key = keyBoard[keyText];
-//                console.log(getTargetKey(event.target).textContent, keyText, keyText.length,  getTargetKey(event.target).textContent.length);
+
 		if (event.target === helpButton) {
 			//window.location = 'http://dematte.at/calculator#usage';
 		}
@@ -371,18 +367,8 @@
 	degButton.addEventListener('click', fnDegRadToggle, false);
 	radButton.addEventListener('click', fnDegRadToggle, false);
 	
-        function getKeyText(n){
-                var _node = n;
-                if(_node && typeof _node.getAttribute("key") === "string"){
-                    return _node.getAttribute("key").trim();
-                }
-		else
-                    return _node.textContent.replace(/\s*/g, '').trim();            
-        }
-        
 	// ------------------- event related functions ------------------ //
 	
-                        
 	function backButton(){
 			
 			var str = resBuffer.replace(/\s/g, ''),
@@ -411,8 +397,7 @@
 	function keyDown (e, obj) { // works for mouse and key
 		var event = e || window.event,
 			target = obj || getTargetKey(event.target),
-			keyText = getKeyText(target),
-//			keyText = target.textContent.replace(/\s*/g, ''),
+			keyText = target.textContent.replace(/\s*/g, ''),
 			key = keyBoard[keyText];
 
 		if (key) {
@@ -623,47 +608,33 @@
 		if (!key.match(/2nd|Deg|Rad|m/)) { // +/- issue
 			buffStr.push(key);			
 			if ((buffStr[buffStr.length - 2] === '=' && key !== '=' &&
-                                calculator[brackets].curr) || key === 'AC') {
+					calculator[brackets].curr) || key === 'AC') {
 				buffStr = [key];
 			}
 		}
 		
 		lastKey = buffStr[buffStr.length - 2];
-		var regex0 =  new RegExp ('(sin-1|cos-1|tan-1|sinh|cosh|tanh|sinh-1|cosh-1|tanh-1|sin|cos|tan|ln|log|log2|3√y?|2√y?|1/x|ex|e\^|3#Wurzel|2#Wurzel|x2|x3)');
+		var regex0 =  new RegExp ('(sin-1|cos-1|tan-1|sinh|cosh|tanh|sinh-1|cosh-1|tanh-1|sin|cos|tan|ln|log|log2|3√y|2√y|1/x|ex|e\^|3#Wurzel|Wurzel|x2|x3)');
+				
 		
-                if(key === "(" && lastKey && (!isNaN(lastKey) || lastKey === "x√y" || lastKey.match(regex0) ) ){
-                        render(calculator[brackets].init(key));
-			hold.textContent = '';                                
-                        dispVal = '0';
-                        renderHistory("AC", "0");
-                        calculator[brackets].curr = false;
-                }
-		
-		else if (key.match(/^[\d|\.|π]$/) || key === '+/–') {
-//                        console.log(key,lastKey, key === "π" && !isNaN(lastKey));
-
-                        if( (lastKey && lastKey.match(regex0)) ||       //also see @renderenderHistory() => /^=-?\d/
-                            (!isNaN(lastKey) && key === "π")
-                        ){
-				dispVal = '0';
-                                renderHistory("AC", "0");
-				calculator[brackets].curr = false;
-                        }
-			else if (calculator[brackets].curr && key !== '+/–' || 
-                           (key === '+/–' && lastKey && lastKey.match(/^[+|–|÷|×|yx|x√y|E|^C]+$/))) {
+		if (key.match(/^[\d|\.|π]$/) || key === '+/–') {
+			if (calculator[brackets].curr && key !== '+/–' || (key === '+/–' &&
+					lastKey && lastKey.match(/^[+|–|÷|×|yx|x√y|E|^C]+$/))) {
 				dispVal = '0';
 				calculator[brackets].curr = false;
+								
+				if(lastKey && lastKey.match(regex0))
+					renderHistory("AC", "0");
 			}
-                        
 			if ((Math.abs(+(dispVal + key)) > (bigger ? 1e15 : 1e9) ||
-                            dispVal.replace(/^-/, '').length > 15 ||
-                            (dispVal.replace('-', '').replace(/\./g, '').length > (bigger ? 14 : 8)) ||
-                            (dispVal.match(/\.|\e\+/) && key === '.')) && key !== '+/–') {
-                                    buffStr.pop();
-                                    return;
+					dispVal.replace(/^-/, '').length > 15 ||
+					(dispVal.replace('-', '').replace(/\./g, '').length > (bigger ? 14 : 8)) ||
+					(dispVal.match(/\.|\e\+/) && key === '.')) && key !== '+/–') {
+				buffStr.pop();
+				return;
 			} else if (key === '+/–') {
 				render(!(dispVal.replace(/e[\+|\-]/, '')).match('-') ?
-                                '-' + dispVal : dispVal.replace(/^-/, ''), '+/–');
+					'-' + dispVal : dispVal.replace(/^-/, ''), '+/–');
 
 			} else {
 				var tmp = (key == "π") ? _PI + '' : dispVal + key;
@@ -836,10 +807,10 @@
 		var tmp = "";
 		logline.textContent = "";
 		
-		if ( typeof renderHistory.logstr === 'undefined' || key.match(/^C|AC|=/) )
+		if ( typeof renderHistory.logstr == 'undefined' || key.match(/^C|AC|=/) )
 			renderHistory.logstr = ["0"];
 
-		if ( typeof renderHistory.dispval === 'undefined' || key.match(/^C|AC|=/) )
+		if ( typeof renderHistory.dispval == 'undefined' || key.match(/^C|AC|=/) )
 			renderHistory.dispval = ["0"];
 				
 		
@@ -848,12 +819,9 @@
 		var prevKey2 = (len > 1) ? renderHistory.logstr[len-2] : null;
 		var append = true;
 		
-//                console.log(key, prevKey);
-                
 		
-		if( (!isNaN(key) || key === "π" || key === "(") && renderHistory.logstr.length === 1 && renderHistory.logstr[0] === "0"){
-			renderHistory.logstr[0] = key;
-                        renderHistory.dispval[0] = key;
+		if( (!isNaN(key) || key == "π") && renderHistory.logstr.length == 1 && renderHistory.logstr[0] == "0"){
+			renderHistory.logstr[0] = key;				
 			append = false;
 			prevKey = null;
 		}		
@@ -861,14 +829,9 @@
 		if(prevKey != null){
 			
 			//...Operatoren nicht mehrfach in Folge loggen / letzer ersetzt vorigen
-			if(prevKey.match(/^(\+|–|÷|×|yx|x√y|E)+$/)){
-                                if(key.match(/^(\+|–|÷|×|yx|x√y|E)+$/)){
-                                    renderHistory.logstr[len-1] = key;
-                                    append = false;
-                                }
-                                else if(key.match(/^(\+|–|÷|×|yx|x√y|E)+$/)){
-                                    
-                                }
+			if(prevKey.match(/^(\+|–|÷|×|yx|x√y|E)+$/) && key.match(/^(\+|–|÷|×|yx|x√y|E)+$/)){
+				renderHistory.logstr[len-1] = key;
+				append = false;
 			}
 			
 			else if(key == "0" && dispVal == key && prevKey == key){
@@ -884,7 +847,7 @@
 				
 				append = false;
 			}
-                        
+
 		}		
 			
 		
@@ -913,18 +876,16 @@
 					var _nextKey = i<renderHistory.logstr.length-1 ? renderHistory.logstr[i+1] : null;					
 												
 					if (_key == "=" && typeof dispVal != "undefined"){
-                                                tmp = dispVal;
-                                                renderHistory.logstr = ["="+dispVal];
-                                                renderHistory.dispval = [dispVal];
-                                                //renderHistory.logstr = [dispVal];
-                                                break;
+							tmp = dispVal;
+							renderHistory.logstr = ["="+dispVal];
+							//renderHistory.logstr = [dispVal];
+							break;
 					}
 					
-					else if(_key.match(/^=-?\d/)){  //also see @evalevalKey()
-						if(_nextKey != null && (!isNaN(_nextKey) || _nextKey === "π") ) {
+					else if(_key.match(/^=-?\d/)){
+						if(_nextKey != null && !isNaN(_nextKey)){
 							tmp = _nextKey;
 							renderHistory.logstr = [_nextKey];
-                                                        renderHistory.dispval = [_nextKey];
 							break;
 						}
 						else
@@ -935,36 +896,28 @@
 					}
 					
 					else if(_key == "π"){
-//                                                console.log(_nextKey != null && !isNaN(_nextKey));
 						if(_nextKey != null && !isNaN(_nextKey)){
-                                                    tmp = _nextKey;
-                                                    renderHistory.logstr = [_nextKey];
-                                                    break;
+							tmp = _nextKey;
+							renderHistory.logstr = [_nextKey];
+							break;
 						}
-//                                                else if(!isNaN(_prevKey)){
-//                                                    renderHistory.logstr = ["π"];
-//                                                    break;
-//                                                }
-                                                
 						else
 							tmp += "π";
 					}						
 					
 					else if(_key == "("){
-                                            
-                                            
 						_brackets++;
 						tmp += "(";
 					}						
 					
 					else if(_key == ")"){
-                                            if(_brackets>0){
-                                                    tmp += ")";
-                                                    _brackets--;
-                                            }
-                                            else{
-                                                    continue;
-                                            }
+						if(_brackets>0){
+							tmp += ")";
+							_brackets--;
+						}
+						else{
+							continue;
+						}
 					}						
 											
 											
@@ -985,34 +938,10 @@
 					}						
 					
 					else if(_key == "x√y"){
-                                                var _operand = "";
-                                                if(_nextKey !== null){
-                                                    var _value = _nextKey;
-//                                                    var _i = i;
-                                                    while(_value != null && !isNaN(_value)){
-                                                        i++;
-                                                        _operand += _value;
-                                                        _value = i<renderHistory.logstr.length-1 ? renderHistory.logstr[i+1] : null;
-                                                    }
-                                                }
-                                                
-                                                var _root = "";
-                                                var regex =  new RegExp ("(-?[0-9π!.]+$|\\([^)]+\\))$");
-						var match = tmp.match(regex);
-                                                if(match !== null){
-                                                    _root = match[0];
-                                                }
-                                                
-                                                if(_operand.length === 0)
-                                                    _operand = "y";
-
-                                                tmp = tmp.substr(0, tmp.length - _root.length);
-                                                tmp += _operand+"√("+_root+")";
-					}
+						tmp += " xWurzel ";
+					}	
 					
-                                        
-                                        
-					else if(_key == "back"){
+					else if(_key == "back"){						
 						tmp += "";
 					}					
 					
@@ -1026,12 +955,11 @@
 					
 					else if(_key == "+/–"){
 						
+						//console.log(renderHistory.dispval);
+						//console.log(_dispVal,_dispVal_0);
 						
 						var _dispVal = renderHistory.dispval[i].toString();
 						var _dispVal_0 = (i>0) ? renderHistory.dispval[i-1].toString() : false;						
-						
-//                                              console.log(renderHistory.dispval,_dispVal,_dispVal_0, i);                                                
-//						console.log(renderHistory.logstr);
 						
 						if(_dispVal_0 !== false){
 							var _pos = tmp.lastIndexOf(_dispVal_0);
@@ -1044,76 +972,12 @@
 					}
 					
 					
-					else{
-                                            
-                                          //fn(x)
-                                          
-                                            var regstr = "sin-1|cos-1|tan-1|sinh|cosh|tanh|sinh-1|cosh-1|tanh-1|sin|cos|tan|ln|log|log2|3√y?|2√y?|1/x|ex|e\\^|3#Wurzel|2#Wurzel";
-                                            var regex0 =  new RegExp ('('+regstr+')');
-
-                                            if(_key.match(regex0)){
-                                                
-						if(_prevKey == null)
-							tmp = "0"+tmp;
-                                                    
-						var regex1 =  new RegExp ("(-?[0-9π!^.]+|\\([^)]+\\))([–+×\/]?)$");
-						if(_prevKey != null){
-							if(_prevKey == 'e^'){	// "^" causes problems, since it's part of the regex syntax and needs to be escaped 
-								regex1 =  new RegExp ("(e\\^\\([^)]+\\))([–+×\/]?)$");
-							}
-							else if(_prevKey.match(regex0)){
-								regex1 =  new RegExp ("("+_prevKey+"\\([^)]+\\))([–+×\/]?)$");
-							}
-						}
-						
-						tmp = tmp.replace(regex1, 
-							function(str,p1,p2){
-								var ret = "";
-//                                                                console.log(p1,p2,p3);
-								if (_key == "3√y" || _key == "3#Wurzel"){
-//									ret = "3#Wurzel("+p1+")";
-									ret = "3√¯("+p1+")";
-									renderHistory.logstr[i] = "3√";
-//									renderHistory.logstr[i] = "3#Wurzel";
-								}								
-								else if(_key == "√" || _key == "2√y" || _key == "2#Wurzel"){
-									ret = "2√("+p1+")";
-//									ret = "2#Wurzel("+p1+")";
-									renderHistory.logstr[i] = "2√";
-//									renderHistory.logstr[i] = "2#Wurzel";
-								}
-								else if (_key == "1/x"){
-									ret = "1/"+p1;
-								}
-								else if (_key == "ex"){
-									ret = "e^("+p1+")";	
-									renderHistory.logstr[i] = "e^";									
-								}
-								else{
-                                                                    ret = _key+"("+p1+")";
-								}
-
-//                                                                if(_prevKey !== null && _prevKey.match(/^(\+|–|÷|×)$/) ){
-                                                                if(p2.length>0){
-                                                                    ret = p1+p2+ret;
-                                                                }
-
-                                                                renderHistory.dispval[i] = ret;								
-
-                                                                return ret;
-							}
-						);                                                    
-                                            }
-                                            
-                                            else
-                                                tmp += renderHistory.logstr[i];
-                                        }
+					else
+						tmp += renderHistory.logstr[i];
 					
-//                                        console.log(renderHistory.logstr, renderHistory.dispval);
 					
-									
-                                    /*
-                                        var regstr = "sin-1|cos-1|tan-1|sinh|cosh|tanh|sinh-1|cosh-1|tanh-1|sin|cos|tan|ln|log|log2|3√y|2√y|1/x|ex|e\\^|3#Wurzel|2#Wurzel";
+				//fn(x)						
+					var regstr = "sin-1|cos-1|tan-1|sinh|cosh|tanh|sinh-1|cosh-1|tanh-1|sin|cos|tan|ln|log|log2|3√y|2√y|x√y|1/x|ex|e\\^|3WurzeI|Wurzel";
 					var regex0 =  new RegExp ('('+regstr+')');
 
 					if(_key.match(regex0)){
@@ -1121,43 +985,37 @@
 						if(_prevKey == null)
 							tmp = "0"+tmp;
 						
-						var regex1 =  new RegExp ("(-?[0-9π!^.]+|\\(.+\\))([–+×\/]?)("+regstr+")$");
+						var regex1 =  new RegExp ("(-?[0-9π!^.]+|\\(.+\\))("+regstr+")", "g");
 						if(_prevKey != null){
 							if(_prevKey == 'e^'){	// "^" causes problems, since it's part of the regex syntax and needs to be escaped 
-								regex1 =  new RegExp ("(e\\^\\(.+\\))([–+×\/]?)("+regstr+")$");
+								regex1 =  new RegExp ("(e\\^\\(.+\\))("+regstr+")", "g");
 							}
 							else if(_prevKey.match(regex0)){
-								regex1 =  new RegExp ("("+_prevKey+"\\(.+\\))([–+×\/]?)("+regstr+")$");
+								regex1 =  new RegExp ("("+_prevKey+"\\(.+\\))("+regstr+")", "g");
 							}
 						}
 						
 						tmp = tmp.replace(regex1, 
-							function(str,p1,p2,p3){
+							function(str,p1,p2){
 								var ret = "";
-//                                                                console.log(p1,p2,p3);
-								if (p3 == "3√y" || p3 == "3#Wurzel"){
-//									ret = "3#Wurzel("+p1+")";
-									ret = "3#Wurzel("+p1+")";
-									renderHistory.logstr[i] = "3#Wurzel";
+								if (p2 == "3√y" || p2 == "3WurzeI"){
+									ret = "3WurzeI("+p1+")";
+									renderHistory.logstr[i] = "3WurzeI";
 								}								
-								else if(p3 == "√" || p3 == "2√y" || p3 == "2#Wurzel"){
-									ret = "2#Wurzel("+p1+")";
-									renderHistory.logstr[i] = "2#Wurzel";
+								else if(p2 == "√" || p2 == "2√y" || p2 == "Wurzel"){
+									ret = "Wurzel("+p1+")";
+									renderHistory.logstr[i] = "Wurzel";
 								}
-								else if (p3 == "1/x"){
+								else if (p2 == "1/x"){
 									ret = "1/"+p1;
 								}
-								else if (p3 == "ex"){
+								else if (p2 == "ex"){
 									ret = "e^("+p1+")";	
 									renderHistory.logstr[i] = "e^";									
 								}
 								else{
-                                                                    ret = p3+"("+p1+")";
+									ret = p2+"("+p1+")";
 								}
-
-                                                                if(p2.length>0){
-                                                                    ret = p1+p2+ret;
-                                                                }
 								
 								renderHistory.dispval[i] = ret;								
 								
@@ -1165,7 +1023,6 @@
 							}
 						);
 					}
-                                        */
 			}
 			
 			logline.textContent = tmp;
