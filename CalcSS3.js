@@ -831,6 +831,13 @@
 		return n % 1 === 0;
 	}
 	
+        
+        function doLog(expr){
+            if(window.top !== window.self && typeof window.top.eeController === "object" ){
+                window.top.eeController.logCalculatorExpression(expr);
+            }
+        }
+        
 	function renderHistory(key, dispVal){		
 		
 		var tmp = "";
@@ -1106,6 +1113,7 @@
                                         }					
 			}
 			
+                        doLog(tmp);
 			logline.textContent = tmp;
 			
 		}
