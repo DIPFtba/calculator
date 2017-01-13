@@ -1,4 +1,4 @@
-(function(window) {	
+﻿(function(window) {	
 	'use strict';
 	 
 	var calcSS3 = document.querySelector('.calc-main'),
@@ -831,12 +831,17 @@
 		return n % 1 === 0;
 	}
 	
+	function doLog(expr){
+		if(window.top !== window.self ){
+			var url = window.location.href;
+			var arr = url.split("/");				
+			var domain = arr[0] + "//" + arr[2];				
+			if(arr[2].indexOf("www") < 0)
+				domain = arr[0] + "//www." + arr[2];
+		   window.top.postMessage(JSON.stringify({type: "calculator", data: expr}), domain);
+		}
+	}
         
-        function doLog(expr){
-            if(window.top !== window.self && typeof window.top.eeController === "object" ){
-                window.top.eeController.logCalculatorExpression(expr);
-            }
-        }
         
 	function renderHistory(key, dispVal){		
 		
