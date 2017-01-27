@@ -301,7 +301,7 @@
 					divs[divs.length-19].addEventListener('mouseup', refreshFocus, false);
 				}
 			}
-		}
+		};
 		
 		
 		document.body.addEventListener('mouseover', refreshFocus, false);
@@ -366,7 +366,7 @@
 	
 	var fnDegRadToggle = function (e) {
 		doKey(e.target.id);
-	}	
+	};
 		
 	degButton.addEventListener('click', fnDegRadToggle, false);
 	radButton.addEventListener('click', fnDegRadToggle, false);
@@ -836,9 +836,9 @@
 			var url = window.location.href;
 			var arr = url.split("/");				
 			var domain = arr[0] + "//" + arr[2];				
-			if(arr[2].indexOf("www") < 0)
-				domain = arr[0] + "//www." + arr[2];
-		   window.top.postMessage(JSON.stringify({type: "calculator", data: expr}), domain);
+			//if(arr[2].indexOf("www") < 0)
+			//	domain = arr[0] + "//www." + arr[2];
+		    window.top.postMessage(JSON.stringify({type: "calculator", data: expr}), domain);
 		}
 	}
         
