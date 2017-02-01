@@ -55,7 +55,9 @@
 
 	Calculator.prototype.calc = function(key, val) {
 		var rank = this.rank;
-
+                
+//                console.log(key, val);
+                
 		if (key === '%') {
 			this.curr = 'funk';
 			return (this.stack[0] ? this.stack[this.num - 1][0] / 100 * val : val / 100) + '';
@@ -386,26 +388,46 @@
 	function backButton(){
 			
 			var str = resBuffer.replace(/\s/g, ''),
-			strLen = str.split('').length - 1;	
+			strLen = str.split('').length - 1;
+                        
+                        console.log("back1", resBuffer, buffStr);
+                
 			while (buffStr.length && !keyBoard[buffStr[buffStr.length - 1]]) { //
 				buffStr.pop(); renderHistory("back");
 			}
+                        
 			if (buffStr[buffStr.length - 1] === '+/–') {
 				doKey('+/–', true);
 				buffStr.pop(); renderHistory("back");
 			} // +/-
-			else if (resBuffer.match(/\-\d$/) || resBuffer.match(/^\d$/)) {
-				buffStr.pop();
-				//doKey('C', true);
-				render('0');
+                        
+			else if (resBuffer.match(/\-\d$/) || resBuffer.match(/^\d$/)) {				                                
+                                
+                                //display previous operand, if there was one
+                                if(calculator[brackets].stack[calculator[brackets].num-1]){
+                                    var stack = calculator[brackets].stack[calculator[brackets].num-1];
+                                    calculator[brackets].stack.splice(--calculator[brackets].num, 1);
+                                    calculator[brackets].buff = [false,false];
+                                    render(calculator[brackets].calc(stack[1],stack[0]));
+                                    buffStr.pop(); renderHistory("back");
+                                }
+                                else{
+                                    //doKey('C', true);
+                                    render('0');
+                                    buffStr.pop(); renderHistory("back");
+                                }
+				
 			} else {
 				render(str.substring(0, strLen), true);
-			}
-			buffStr.pop(); renderHistory("back");
-			if (buffStr[buffStr.length - 1] === '.') {
+                                buffStr.pop(); renderHistory("back");
+			}                        
+//						
+                        if (buffStr[buffStr.length - 1] === '.') {
 				render(str.substring(0, strLen - 1));
 				buffStr.pop();  renderHistory("back"); 
 			}
+                        
+                        console.log("back2", JSON.stringify(calculator[brackets].stack), JSON.stringify(calculator[brackets].buff), buffStr);
 	}
 	
 	function keyDown (e, obj) { // works for mouse and key
@@ -483,6 +505,7 @@
 	}
 
 	function render(val, inp) {
+                val+='';
 		var regx = /(\d+)(\d{3})/,
 			hasComma = val.match(/\./),
 			tmp,
@@ -586,7 +609,8 @@
 		}
 
 		evalKey(text);
-		
+		console.log("evalKey", calculator, JSON.stringify(calculator[brackets].stack), JSON.stringify(calculator[brackets].buff), buffStr);
+                
 		if (!alt) {
 			keyUp();
 		}
@@ -597,6 +621,7 @@
 	}
 
 	function evalKey(key) {
+                                            
 		var dispVal = resBuffer.replace(/\s/g, '').replace(/Error|∞|-∞/, '0') + '',
 			_PI = Math.PI,
 			lastKey;
@@ -604,8 +629,9 @@
 		if(key == '←'){
 			/*var str = resBuffer.replace(/\s/g, ''),
 					strLen = str.split('').length - 1;	*/
-					
-			if (calculator[brackets].curr !== true &&
+			var _lastKey = buffStr[buffStr.length - 1];
+			if (calculator[brackets].curr !== true && 
+                        !_lastKey.match(/^[+|–|÷|×|yx|x√y|E|^C]+$/) &&
 			calculator[brackets].curr !== 'funk' /*&& str !== '0'*/) {
 				backButton();
 			}
@@ -649,11 +675,17 @@
                                 renderHistory("AC", "0");
 				calculator[brackets].curr = false;
                         }
-			else if (calculator[brackets].curr && key !== '+/–' || 
-                           (key === '+/–' && lastKey && lastKey.match(/^[+|–|÷|×|yx|x√y|E|^C]+$/))) {
+			else if (calculator[brackets].curr && key !== '+/–') {
 				dispVal = '0';
 				calculator[brackets].curr = false;
 			}
+                        
+                        else if( key === '+/–' && lastKey && lastKey.match(/^[+|–|÷|×|yx|x√y|E|^C]+$/) ){
+                            render("Error");
+                            resBuffer = "0";
+                            renderHistory("AC", "0");
+                            return;
+                        }
                         
 			if ((Math.abs(+(dispVal + key)) > (bigger ? 1e15 : 1e9) ||
                             dispVal.replace(/^-/, '').length > 15 ||
@@ -677,6 +709,7 @@
 			if(lastKey == "(" && key.match(/^[+|–|×|-|*]+$/))
 				val = 0;
 			render(calculator[brackets].calc(key, val));
+                        console.log("post-calc", JSON.stringify(calculator[brackets].stack), JSON.stringify(calculator[brackets].buff), buffStr);
 		} else {
 			if (brackets > -1) {
 				calculator[brackets].curr = 'funk';
@@ -847,6 +880,8 @@
 		
 		var tmp = "";
 		logline.textContent = "";
+                if(typeof dispVal === "undefined")
+                    dispVal = display.firstChild.data;
 		
 		if ( typeof renderHistory.logstr === 'undefined' || key.match(/^C|AC|=/) )
 			renderHistory.logstr = ["0"];
@@ -854,13 +889,13 @@
 		if ( typeof renderHistory.dispval === 'undefined' || key.match(/^C|AC|=/) )
 			renderHistory.dispval = ["0"];
 				
-		
+                
 		var len = renderHistory.logstr.length;
 		var prevKey = (len > 0) ? renderHistory.logstr[len-1] : null;
 		var prevKey2 = (len > 1) ? renderHistory.logstr[len-2] : null;
 		var append = true;
 		
-//                console.log(key, prevKey);
+//                console.log(renderHistory.logstr);
                 
 		
 		if( (!isNaN(key) || key === "π" || key === "(") && renderHistory.logstr.length === 1 && renderHistory.logstr[0] === "0"){
@@ -878,9 +913,6 @@
                                     renderHistory.logstr[len-1] = key;
                                     append = false;
                                 }
-                                else if(key.match(/^(\+|–|÷|×|yx|x√y|E)+$/)){
-                                    
-                                }
 			}
 			
 			else if(key == "0" && dispVal == key && prevKey == key){
@@ -888,19 +920,19 @@
 			}			
 
 			else if(key == "back"){
-				
+				append = false;				
 				if(prevKey.match(/^(\.|\d|\(|\))/))
 				{
 					renderHistory.logstr.pop();
-				}				
-				
-				append = false;
-			}
-                        
+                                        renderHistory.dispval.pop();
+                                        
+//                                        console.log(prevKey2, renderHistory.dispval, renderHistory.logstr);
+				}								
+			}                        
 		}		
 			
 		
-		if (append && !key.match(/2nd|Deg|Rad|m|C|AC/)){
+		if (append && !key.match(/2nd|Deg|Rad|m|C|AC|back/)){
 			renderHistory.logstr.push(key);
 			if(key=="π" || (len > 0 && renderHistory.dispval[len-1] === "-π" && key === "+/–")){
 				renderHistory.dispval.push("π");
@@ -912,7 +944,7 @@
 				renderHistory.dispval.push(dispVal);
 			}
 		}
-				
+//		console.log(prevKey2, renderHistory.dispval, renderHistory.logstr);		
 				
 		if(renderHistory.logstr.length){		
 				
@@ -932,7 +964,7 @@
                                                 break;
 					}
 					
-					else if(_key.match(/^=-?\d/)){  //also see @evalevalKey()
+					else if(_key.match(/^=-?\d/)){  //also see @evalKey()
 						if(_nextKey != null && (!isNaN(_nextKey) || _nextKey === "π") ) {
 							tmp = _nextKey;
 							renderHistory.logstr = [_nextKey];
