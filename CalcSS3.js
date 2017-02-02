@@ -403,31 +403,31 @@
                         
 			else if (resBuffer.match(/\-\d$/) || resBuffer.match(/^\d$/)) {				                                
                                 
-                                //display previous operand, if there was one
-                                if(calculator[brackets].stack[calculator[brackets].num-1]){
-                                    var stack = calculator[brackets].stack[calculator[brackets].num-1];
-                                    calculator[brackets].stack.splice(--calculator[brackets].num, 1);
-                                    calculator[brackets].buff = [false,false];
-                                    render(calculator[brackets].calc(stack[1],stack[0]));
-                                    buffStr.pop(); renderHistory("back");
-                                }
-                                else{
-                                    //doKey('C', true);
-                                    render('0');
-                                    buffStr.pop(); renderHistory("back");
-                                }
+				//display previous operand, if there was one
+				if(calculator[brackets].stack[calculator[brackets].num-1]){
+					var stack = calculator[brackets].stack[calculator[brackets].num-1];
+					calculator[brackets].stack.splice(--calculator[brackets].num, 1);
+					calculator[brackets].buff = [false,false];
+					render(calculator[brackets].calc(stack[1],stack[0]));
+					buffStr.pop(); renderHistory("back");
+				}
+				else{
+					//doKey('C', true);
+					render('0');
+					buffStr.pop(); renderHistory("back");
+				}
 				
 			} else {
 				render(str.substring(0, strLen), true);
-                                buffStr.pop(); renderHistory("back");
+				buffStr.pop(); renderHistory("back");
 			}                        
 //						
-                        if (buffStr[buffStr.length - 1] === '.') {
+			if (buffStr[buffStr.length - 1] === '.') {
 				render(str.substring(0, strLen - 1));
 				buffStr.pop();  renderHistory("back"); 
 			}
                         
-                        console.log("back2", JSON.stringify(calculator[brackets].stack), JSON.stringify(calculator[brackets].buff), buffStr);
+			console.log("back2", JSON.stringify(calculator[brackets].stack), JSON.stringify(calculator[brackets].buff), buffStr);
 	}
 	
 	function keyDown (e, obj) { // works for mouse and key
@@ -909,10 +909,10 @@
 			
 			//...Operatoren nicht mehrfach in Folge loggen / letzer ersetzt vorigen
 			if(prevKey.match(/^(\+|–|÷|×|yx|x√y|E)+$/)){
-                                if(key.match(/^(\+|–|÷|×|yx|x√y|E)+$/)){
-                                    renderHistory.logstr[len-1] = key;
-                                    append = false;
-                                }
+				if(key.match(/^(\+|–|÷|×|yx|x√y|E)+$/)){
+					renderHistory.logstr[len-1] = key;
+					append = false;
+				}
 			}
 			
 			else if(key == "0" && dispVal == key && prevKey == key){
@@ -921,12 +921,20 @@
 
 			else if(key == "back"){
 				append = false;				
-				if(prevKey.match(/^(\.|\d|\(|\))/))
+				if(prevKey.match(/^(\.|\d|\(|\))/) &&
+				   renderHistory.logstr.length>1 || renderHistory.logstr[0] !== "0"
+				)
 				{
 					renderHistory.logstr.pop();
-                                        renderHistory.dispval.pop();
-                                        
-//                                        console.log(prevKey2, renderHistory.dispval, renderHistory.logstr);
+					renderHistory.dispval.pop();
+					
+					if(renderHistory.logstr.length == 0){
+						renderHistory.logstr = ["0"];
+						renderHistory.dispval = ["0"];
+					}
+						
+					
+//					console.log(prevKey2, renderHistory.dispval, renderHistory.logstr);
 				}								
 			}                        
 		}		
