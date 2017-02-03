@@ -390,7 +390,7 @@
 			var str = resBuffer.replace(/\s/g, ''),
 			strLen = str.split('').length - 1;
                         
-                        console.log("back1", resBuffer, buffStr);
+//                        console.log("back1", resBuffer, buffStr);
                 
 			while (buffStr.length && !keyBoard[buffStr[buffStr.length - 1]]) { //
 				buffStr.pop(); renderHistory("back");
@@ -427,7 +427,7 @@
 				buffStr.pop();  renderHistory("back"); 
 			}
                         
-			console.log("back2", JSON.stringify(calculator[brackets].stack), JSON.stringify(calculator[brackets].buff), buffStr);
+//			console.log("back2", JSON.stringify(calculator[brackets].stack), JSON.stringify(calculator[brackets].buff), buffStr);
 	}
 	
 	function keyDown (e, obj) { // works for mouse and key
@@ -609,7 +609,7 @@
 		}
 
 		evalKey(text);
-		console.log("evalKey", calculator, JSON.stringify(calculator[brackets].stack), JSON.stringify(calculator[brackets].buff), buffStr);
+//		console.log("evalKey", calculator, JSON.stringify(calculator[brackets].stack), JSON.stringify(calculator[brackets].buff), buffStr);
                 
 		if (!alt) {
 			keyUp();
@@ -709,7 +709,7 @@
 			if(lastKey == "(" && key.match(/^[+|–|×|-|*]+$/))
 				val = 0;
 			render(calculator[brackets].calc(key, val));
-                        console.log("post-calc", JSON.stringify(calculator[brackets].stack), JSON.stringify(calculator[brackets].buff), buffStr);
+//                        console.log("post-calc", JSON.stringify(calculator[brackets].stack), JSON.stringify(calculator[brackets].buff), buffStr);
 		} else {
 			if (brackets > -1) {
 				calculator[brackets].curr = 'funk';
