@@ -389,19 +389,24 @@
 			
 			var str = resBuffer.replace(/\s/g, ''),
 			strLen = str.split('').length - 1;
-                        
+                        var lastKey = buffStr[buffStr.length - 1];
+                                                
 //                        console.log("back1", resBuffer, buffStr);
                 
 			while (buffStr.length && !keyBoard[buffStr[buffStr.length - 1]]) { //
 				buffStr.pop(); renderHistory("back");
 			}
                         
-			if (buffStr[buffStr.length - 1] === '+/–') {
+			if (lastKey === '+/–') {
 				doKey('+/–', true);
 				buffStr.pop(); renderHistory("back");
 			} // +/-
                         
-			else if (resBuffer.match(/\-\d$/) || resBuffer.match(/^\d$/)) {				                                
+                        else if (brackets && lastKey === "("){                            
+                            calculator.splice(brackets--, 1);
+                        }                        
+            
+			if (resBuffer.match(/\-\d$/) || resBuffer.match(/^\d$/)) {				                                
                                 
 				//display previous operand, if there was one
 				if(calculator[brackets].stack[calculator[brackets].num-1]){
@@ -426,7 +431,7 @@
 				render(str.substring(0, strLen - 1));
 				buffStr.pop();  renderHistory("back"); 
 			}
-                        
+//                        console.log(buffStr);
 //			console.log("back2", JSON.stringify(calculator[brackets].stack), JSON.stringify(calculator[brackets].buff), buffStr);
 	}
 	
@@ -630,9 +635,14 @@
 			/*var str = resBuffer.replace(/\s/g, ''),
 					strLen = str.split('').length - 1;	*/
 			var _lastKey = buffStr[buffStr.length - 1];
-			if (calculator[brackets].curr !== true && 
-                        !_lastKey.match(/^[+|–|÷|×|yx|x√y|E|^C]+$/) &&
-			calculator[brackets].curr !== 'funk' /*&& str !== '0'*/) {
+			if (
+                                (
+                                   calculator[brackets].curr !== true 
+                                   && calculator[brackets].curr !== 'funk' /*&& str !== '0'*/
+                                   && !_lastKey.match(/^[+|–|÷|×|yx|x√y|E|^C]+$/) 
+                                )
+                                || _lastKey === "("
+                        ) {
 				backButton();
 			}
 			return;
@@ -702,6 +712,8 @@
 				render((tmp).replace(/^(-)*?0(\d)$/, '$1' + '$2'), true);
 			}
 		} else if (key.match(/^C|AC/)) {
+                        calculator = [new Calculator()];
+                        brackets = 0;
 			render(calculator[brackets].init(key));
 			hold.textContent = '';
 		} else if (key.match(/^[+|–|÷|×|-|\/|*|yx|x√y|%|E]+$/) && key !== '√') {
