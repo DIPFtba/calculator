@@ -127,7 +127,8 @@
 	// colloect all keys...
 	for (var l = calcSS3.children[2], m = l.children, n = m.length; n--; ) {
                 var _key = getKeyText(l.children[n]);
-                keyBoard[_key] = l.children[n];
+                if(_key.length>0)
+					keyBoard[_key] = l.children[n];
 	}
 
 	
