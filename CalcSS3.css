@@ -242,6 +242,7 @@ html body{
 	height: 28px;
 	font-size: 15px;
 	padding: 0px;
+	touch-action: none;
 }
 
 .calc-left > div.small.mixed{
