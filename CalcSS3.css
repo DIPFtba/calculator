@@ -1,5 +1,9 @@
 /* ------- calculator housing ------- */
 
+html{
+	touch-action: manipulation;
+}
+
 html body{
 	background-color: #fff;
 }
