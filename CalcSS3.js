@@ -1,4 +1,31 @@
-﻿(function(window) {	
+//relevant for CBA Itembuilder only
+var indexPath = getQueryVariable('indexPath');
+var userDefIdPath = getQueryVariable('userDefIdPath');
+var traceCount = 0;
+
+function getQueryVariable(variable)
+{
+    const parsedUrl = new URL(window.location.href);
+    return parsedUrl.searchParams.get(variable);
+}
+
+function sendIBTraceMessage(type, message){
+	
+	if(!indexPath || !userDefIdPath)
+		return;
+	
+	var pass_data = {
+	     indexPath: indexPath,
+	     userDefIdPath: userDefIdPath, 
+	     traceMessage: message,
+         traceType: type,	     
+	     traceCount : traceCount++
+	 };
+	 window.parent.postMessage(JSON.stringify(pass_data), '*');	
+	 
+}
+
+(function(window) {	
 	'use strict';
 	 
 	var calcSS3 = document.querySelector('.calc-main'),
@@ -878,13 +905,16 @@
 	}
 	
 	function doLog(expr){
+		
 		if(window.top !== window.self ){
 			var url = window.location.href;
 			var arr = url.split("/");				
 			var domain = arr[0] + "//" + arr[2];				
-			//if(arr[2].indexOf("www") < 0)
-			//	domain = arr[0] + "//www." + arr[2];
 		    window.top.postMessage(JSON.stringify({type: "calculator", data: expr}), domain);
+		}
+		
+		if(window.parent !== window.self ){
+			sendIBTraceMessage("calculator", expr);
 		}
 	}
         
@@ -1171,7 +1201,7 @@
                                         }					
 			}
 			
-                        doLog(tmp);
+                        doLog({display: tmp, key: _key});
 			logline.textContent = tmp;
 			
 		}
