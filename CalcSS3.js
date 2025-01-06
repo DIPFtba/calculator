@@ -19,7 +19,7 @@ function sendIBTraceMessage(type, message){
 	     userDefIdPath: userDefIdPath, 
 	     traceMessage: message,
          traceType: type,	     
-	     traceCount : traceCount++
+	     traceCount : 1
 	 };
 	 window.parent.postMessage(JSON.stringify(pass_data), '*');	
 	 
