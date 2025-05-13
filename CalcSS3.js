@@ -676,6 +676,26 @@ function sendIBTraceMessage(type, message){
 			return;
 		}
 		
+		if(key == "C"){
+			
+			let _check = true;
+			
+			do {
+				var _lastKey = buffStr[buffStr.length - 1];
+				if(
+				   calculator[brackets].curr !== true 
+				   && calculator[brackets].curr !== 'funk' /*&& str !== '0'*/
+				   && !_lastKey.match(/^[+|–|÷|×|yx|x√y|E|\(|\)|^C]+$/)
+				)
+					backButton();
+				else
+					_check = false;
+
+			} while (_check);
+			
+			return;
+		}
+		
 		if(key == "mr" && memory){			
 			let _mem = memory + '';
 			for(let i = 0; i < _mem.length; i++){								
@@ -739,7 +759,7 @@ function sendIBTraceMessage(type, message){
 				var tmp = (key == "π") ? _PI + '' : dispVal + key;
 				render((tmp).replace(/^(-)*?0(\d)$/, '$1' + '$2'), true);
 			}
-		} else if (key.match(/^C|AC/)) {
+		} else if (key.match(/AC/)) {
                         calculator = [new Calculator()];
                         brackets = 0;
 			render(calculator[brackets].init(key));
